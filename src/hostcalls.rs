@@ -231,18 +231,25 @@ pub fn get_map_value(map_type: MapType, key: &str) -> Result<Option<String>, Sta
             &mut return_size,
         ) {
             Status::Ok => {
-                if !return_data.is_null() {
-                    Ok(Some(
-                        String::from_utf8(Vec::from_raw_parts(
-                            return_data,
-                            return_size,
-                            return_size,
-                        ))
-                        .unwrap(),
-                    ))
+              if !return_data.is_null() {
+                let str = match String::from_utf8(Vec::from_raw_parts(
+                  return_data,
+                  return_size,
+                  return_size,
+                  )) {
+                    Ok(str) => str,
+                    Err(_) => String::new()
+                  };
+                // Need to handle utf8 conversion error
+                // Return None (not found) for malform utf8 string header
+                if str.is_empty() {
+                  Ok(None)
                 } else {
-                    Ok(None)
+                  Ok(Some(str))
                 }
+              } else {                    
+                Ok(None)
+              }
             }
             Status::NotFound => Ok(None),
             status => panic!("unexpected status: {}", status as u32),
