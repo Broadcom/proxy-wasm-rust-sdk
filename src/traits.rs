@@ -20,6 +20,14 @@ pub trait Context {
     fn get_current_time(&self) -> SystemTime {
         hostcalls::get_current_time().unwrap()
     }
+    
+    fn get_current_unix_time_nsecs(&self) -> u64 {
+      hostcalls::get_current_unix_time_nsecs()
+    }
+
+    fn get_current_unix_time_secs(&self) -> u64 {
+      hostcalls::get_current_unix_time_secs()
+    }
 
     fn get_property(&self, path: Vec<&str>) -> Option<Bytes> {
         hostcalls::get_property(path).unwrap()
