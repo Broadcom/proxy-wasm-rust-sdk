@@ -58,6 +58,28 @@ pub fn get_current_time() -> Result<SystemTime, Status> {
     }
 }
 
+pub fn get_current_unix_time_nsecs() -> u64 {
+  let mut return_time: u64 = 0;
+  unsafe {
+      match proxy_get_current_time_nanoseconds(&mut return_time) {
+          Status::Ok => return_time,
+          status =>0,
+      }
+  }
+}
+
+pub fn get_current_unix_time_secs() -> u64 {
+  let mut return_time: u64 = 0;
+  unsafe {
+      match proxy_get_current_time_nanoseconds(&mut return_time) {
+          Status::Ok => {
+            return_time/1000000000
+          },
+          status =>0,
+      }
+  }
+}
+
 extern "C" {
     fn proxy_set_tick_period_milliseconds(period: u32) -> Status;
 }
